@@ -20,5 +20,16 @@ namespace api.Mappers
                 DatePosted = mediaPost.DatePosted
             };
         }
+
+        public static MediaPost ToMediaPostFromCreateDTO(this CreateMediaPostDto mediaPostDto)
+        {
+            return new MediaPost
+            {
+                Title = mediaPostDto.Title,
+                Description = mediaPostDto.Description,
+                Author = mediaPostDto.Author,
+                DatePosted = mediaPostDto.DatePosted
+            };
+        }
     }
 }

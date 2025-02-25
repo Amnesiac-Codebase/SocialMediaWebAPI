@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.MediaPost;
 using api.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -33,6 +35,15 @@ namespace api.Controllers
                 return NotFound();
             }
             return Ok(post.ToMediaPostDto());
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateMediaPostDto mediaPostDto)
+        {
+            var mediaPost = mediaPostDto.ToMediaPostFromCreateDTO();
+            _context.MediaPosts.Add(mediaPost);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(GetById), new { id = mediaPost.Id }, mediaPost.ToMediaPostDto());
         }
     }
 }
