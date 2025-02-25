@@ -45,5 +45,50 @@ namespace api.Controllers
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetById), new { id = mediaPost.Id }, mediaPost.ToMediaPostDto());
         }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] CreateMediaPostDto mediaPostDto)
+        {
+            var post = _context.MediaPosts.Find(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            post.Title = mediaPostDto.Title;
+            post.Description = mediaPostDto.Description;
+            post.Author = mediaPostDto.Author;
+            post.DatePosted = mediaPostDto.DatePosted;
+            _context.SaveChanges();
+            return Ok(post.ToMediaPostDto());
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartialUpdate(int id, [FromBody] PatchMediaPostDto mediaPostDto)
+        {
+            var post = _context.MediaPosts.Find(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            if (mediaPostDto.Title != null)
+            {
+                post.Title = mediaPostDto.Title;
+            }
+            if (mediaPostDto.Description != null)
+            {
+                post.Description = mediaPostDto.Description;
+            }
+            if (mediaPostDto.Author != null)
+            {
+                post.Author = mediaPostDto.Author;
+            }
+            if (mediaPostDto.DatePosted != null)
+            {
+                post.DatePosted = mediaPostDto.DatePosted;
+            }
+            _context.SaveChanges();
+            return Ok(post.ToMediaPostDto());
+        }
     }
 }
