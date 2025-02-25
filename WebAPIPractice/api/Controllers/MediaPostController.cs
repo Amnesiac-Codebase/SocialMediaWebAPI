@@ -7,6 +7,7 @@ using api.Dtos.MediaPost;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -21,15 +22,16 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_context.MediaPosts.Select(p => p.ToMediaPostDto()).ToList());
+            var posts = await _context.MediaPosts.ToListAsync();
+            return Ok(posts.Select(p => p.ToMediaPostDto()).ToList());
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var post = _context.MediaPosts.Find(id);
+            var post = await _context.MediaPosts.FindAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -38,18 +40,18 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateMediaPostDto mediaPostDto)
+        public async Task<IActionResult> Create([FromBody] CreateMediaPostDto mediaPostDto)
         {
             var mediaPost = mediaPostDto.ToMediaPostFromCreateDTO();
-            _context.MediaPosts.Add(mediaPost);
-            _context.SaveChanges();
+            await _context.MediaPosts.AddAsync(mediaPost);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = mediaPost.Id }, mediaPost.ToMediaPostDto());
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] CreateMediaPostDto mediaPostDto)
+        public async Task<IActionResult> Update(int id, [FromBody] CreateMediaPostDto mediaPostDto)
         {
-            var post = _context.MediaPosts.Find(id);
+            var post = await _context.MediaPosts.FindAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -58,14 +60,14 @@ namespace api.Controllers
             post.Description = mediaPostDto.Description;
             post.Author = mediaPostDto.Author;
             post.DatePosted = mediaPostDto.DatePosted;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok(post.ToMediaPostDto());
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PartialUpdate(int id, [FromBody] PatchMediaPostDto mediaPostDto)
+        public async Task<IActionResult> PartialUpdate(int id, [FromBody] PatchMediaPostDto mediaPostDto)
         {
-            var post = _context.MediaPosts.Find(id);
+            var post = await _context.MediaPosts.FindAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -87,7 +89,7 @@ namespace api.Controllers
             {
                 post.DatePosted = mediaPostDto.DatePosted;
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok(post.ToMediaPostDto());
         }
 
