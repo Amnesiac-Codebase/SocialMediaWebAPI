@@ -90,5 +90,18 @@ namespace api.Controllers
             _context.SaveChanges();
             return Ok(post.ToMediaPostDto());
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var post = _context.MediaPosts.FirstOrDefault(x => x.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            _context.MediaPosts.Remove(post);
+            _context.SaveChanges();
+            return NoContent();
+        }
     }
 }
