@@ -41,12 +41,12 @@ namespace api.Repository
 
         public async Task<List<MediaPost>> GetAllAsync()
         {
-            return await _context.MediaPosts.ToListAsync();
+            return await _context.MediaPosts.Include(c => c.Comments).ToListAsync();
         }
 
         public async Task<MediaPost?> GetByIdAsync(int id)
         {
-            return await _context.MediaPosts.FindAsync(id);
+            return await _context.MediaPosts.Include(c => c.Comments).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<MediaPost?> PatchAsync(int id, PatchMediaPostDto mediaPostDto)

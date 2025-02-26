@@ -17,7 +17,8 @@ namespace api.Mappers
                 Title = mediaPost.Title,
                 Description = mediaPost.Description,
                 Author = mediaPost.Author,
-                DatePosted = mediaPost.DatePosted
+                DatePosted = mediaPost.DatePosted,
+                Comments = mediaPost.Comments.Select(c => c.ToCommentDtoFromComment()).ToList()
             };
         }
 
